@@ -33,7 +33,8 @@ CREATE TABLE usuarios (
 	email TEXT NOT NULL,
 	rol TEXT NOT NULL,
 	password TEXT,
-	token TEXT
+	token TEXT,
+	resetToken TEXT
 );
 
 -- Relaciones

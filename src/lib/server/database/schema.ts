@@ -38,4 +38,5 @@ export const usuarios =  sqliteTable('usuarios', {
 	rol: text('rol').notNull(),
 	password: text('password'),
 	token: text('token'),
+	resetToken: text("resetToken")
 });

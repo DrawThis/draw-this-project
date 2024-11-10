@@ -14,11 +14,11 @@
 		Por favor ingresa el Correo Electrónico con el que iniciaste sesión en Draw This
 	</p>
 	<br />
-	<form action="/olvido-contraseña">
+	<form method="POST" action="?/forgotPassword">
 		<div class="input-group">
-			<label class="label" for="">Correo Electrónico</label>
+			<label class="label" for="email">Correo Electrónico</label>
 			<input
-				name="Email"
+				name="email"
 				id="Email"
 				class="input"
 				type="email"

@@ -142,7 +142,7 @@
 					placeholder="User123"
 					required
 					minlength="4"
-					maxlength="15"
+					maxlength="16"
 					id="usernameInput"
 				/>
 				<Icon icon="line-md:person-twotone" class="i" />

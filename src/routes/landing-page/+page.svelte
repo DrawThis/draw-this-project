@@ -1,13 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import '$lib/CSS/landing page.css';
 
-	let username: string | null | undefined;
-
-	onMount(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    username = urlParams.get('username');
-  	});
+	let username = $page.url.searchParams.get('username') || 'Invitado';
 
 	import {
 		logo,
