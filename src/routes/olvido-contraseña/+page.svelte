@@ -1,90 +1,28 @@
 <script lang="ts">
-	import '$lib/CSS/Olvido contraseña.css';
-
-	let inputs: string[] = Array(4).fill('');
-	let buttonActive = false;
-	let inputElements: HTMLInputElement[] = [];
-
-	const handleKeyUp = (e: KeyboardEvent, index: number) => {
-		const currentInput = inputElements[index];
-		const nextInput = inputElements[index + 1];
-		const prevInput = inputElements[index - 1];
-
-		if (inputs[index].length > 1) {
-			inputs[index] = '';
-			return;
-		}
-
-		if (nextInput && nextInput.disabled && inputs[index] !== '') {
-			nextInput.disabled = false;
-			nextInput.focus();
-		}
-
-		if (e.key === 'Backspace' && prevInput) {
-			for (let i = index; i < inputElements.length; i++) {
-				inputElements[i].disabled = true;
-				inputs[i] = '';
-			}
-			prevInput.focus();
-		}
-
-		buttonActive = inputs.every((input) => input !== '');
-	};
-</script>
-
-<svelte:head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Recupera tu contraseña</title>
-</svelte:head>
-
-<div class="container">
-	<header></header>
-	<h2>Introduce el código</h2>
-	<p>Hemos enviado un código para recuperar tu contraseña</p>
-	<form>
-		<div class="input-field">
-			{#each inputs as input, index}
-				<input
-					type="number"
-					bind:this={inputElements[index]}
-					bind:value={inputs[index]}
-					maxlength="1"
-					on:keyup={(e) => handleKeyUp(e, index)}
-					disabled={index !== 0}
-				/>
-			{/each}
+	import '$lib/CSS/olvido contraseña.css';
+	import { page } from '$app/stores';
+	let token = $page.url.searchParams.get('token');
+	let newPassword = '';
+  </script>
+  
+  <div class="container">
+	<span class="title"><h2>Cambiar Contraseña</h2></span>
+	<p class="message">
+		Por favor ingresa tu nueva contraseña en Draw This
+	</p>
+	<br />
+	<form method="POST" action="?/resetPassword">
+		<div class="input-group">
+			<input type="hidden" name="token" value={token} />
+			<label class="label" for="password">Nueva contraseña:</label>
+			<input class="input" type="password" name="password" id="password" bind:value={newPassword} required />
 		</div>
-		<a
-			href="/contraseña-verificada"
-			data-sveltekit-reload
-			data-sveltekit-preload-data="tap"
-			class="enviar"
-			type="submit"
-			class:active={buttonActive}
-			>Verificar</a>
+		<br />
+		<div class="actions">
+			<a href="/contraseña-verificada" data-sveltekit-reload data-sveltekit-preload-data="tap">
+				<button class="enviar" type="submit">Restablecer contraseña</button>
+			</a>
+		</div>
 	</form>
-	<p>¿No recibiste el código?<br /> <a href="#recuperate">Reenviar código</a></p>
 </div>
-
-<a
-	href="/peticion-correo"
-	data-sveltekit-reload
-	data-sveltekit-preload-data="tap"
-	class="back-link"
->
-	<button class="back">
-		<svg
-			height="16"
-			width="16"
-			xmlns="http://www.w3.org/2000/svg"
-			version="1.1"
-			viewBox="0 0 1024 1024"
-		>
-			<path
-				d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.009120-223.009120c-3.837398-3.837398-5.996574-9.046027-5.996574-14.469550 0-5.433756 2.159176-10.632151 5.996574-14.469550l223.019353-223.029586c7.992021-7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z"
-			></path>
-		</svg>
-		<span>Volver</span>
-	</button>
-</a>
+  
