@@ -102,8 +102,8 @@
 					on:keypress={(e) => e.key === 'Enter' && togglePassword(1)}
 					><Icon
 						icon={passwordType1 === 'password' ? 'line-md:watch-off' : 'line-md:watch'}
-					/></button
-				>
+					/>
+				</button>
 			</div>
 			<div class="content">
 				<div class="checkbox">
