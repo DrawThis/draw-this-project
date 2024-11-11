@@ -1,5 +1,5 @@
 <script lang="ts">
-	import '$lib/CSS/olvido contraseña.css';
+	import '$lib/CSS/olvido.css';
 	import { page } from '$app/stores';
 	let token = $page.url.searchParams.get('token');
 	let newPassword = '';
