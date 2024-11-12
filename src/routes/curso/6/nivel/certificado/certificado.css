@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Playwrite+CA:wght@100..400&display=swap');
+
+* {
+	margin: 0;
+	font-family: 'Poppins', sans-serif;
+}
+
+body {
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+img {
+    position: relative;
+    width: 150px;
+    right: 380px;
+}
+
+.certificate-container {
+    margin-left: 11%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    background-color: white;
+    padding: 38px;
+    border: 20px solid #03182e;
+    width: 80%;
+    max-width: 900px;
+    height: 450px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.header {
+    font-size: 2.5rem;
+    color: #003366;
+    font-weight: bold;
+}
+
+.sub-header {
+    font-size: 1.5rem;
+    color: #003366;
+    margin: 10px 0;
+}
+
+.recipient {
+    font-family: "Corinthia", serif;
+    font-size: 60px;
+    color: #003366;
+    margin: 20px 0;
+}
+
+.certificate-body {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.signature-container {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.signature {
+    text-align: center;
+    font-size: 1rem;
+    color: #003366;
+}
+
+.signature-text {
+    font-family: "Corinthia", serif;
+    font-size: 40px;
+}
+
+.button {
+    position: relative;
+    margin-left: 42%;
+    width: 156px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border: 1px solid #17795E;
+    background-color: #209978;
+    overflow: hidden;
+  }
+  
+  .button, .button-icon, .button-text {
+    transition: all 0.3s;
+  }
+  
+  .button .button-text {
+    transform: translateX(22px);
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .button .button-icon {
+    position: absolute;
+    transform: translateX(109px);
+    height: 100%;
+    width: 42px;
+    background-color: #17795E;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .i {
+    font-size: 30px;
+    color: white;
+  }
+  
+  .button:hover {
+    background: #17795E;
+  }
+  
+  .button:hover .button-text {
+    color: transparent;
+  }
+  
+  .button:hover .button-icon {
+    width: 148px;
+    transform: translateX(0);
+  }
+  
+  .button:active .button-icon {
+    background-color: #146c54;
+  }
+  
+  .button:active {
+    border: 1px solid #146c54;
+  }
