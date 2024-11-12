@@ -2,7 +2,6 @@ import { db } from '$lib/server/database/client'
 import { usuarios } from '$lib/server/database/schema'
 import { eq } from 'drizzle-orm'
 
-
 export const handle = async ({ event, resolve }) => {
 
     const session = event.cookies.get('session')
