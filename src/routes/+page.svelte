@@ -313,14 +313,14 @@
 			<div class="body-card">
 
 				<p>
-					Ten en cuenta que tendrás acceso limitado a la plataforma y a los cursos, algunas de estas limitaciones son:
+					Ten en cuenta que, aunque tengas el acceso completo a la plataforma, algunas limitaciones que tendrás son:
 				</p>
 
 				<ul>
-					<li><p>Acceso muy limitado a los cursos.</p></li>
 					<li><p>Tu sesión no será guardada, por lo que tendrás que iniciar sesión nuevamente.</p></li>
-					<li><p>No tendrás acceso a los materiales creativos</p></li>
-					<li><p>Serás reconocido como "Invitado" y no por tu nombre de usuario</p></li>
+					<li><p>Serás reconocido como "Invitado" y no por tu nombre de usuario.</p></li>
+					<li><p>Los certificados de cada curso tendran como nombre "Invitado".</p></li>
+					<li><p>No podrás usar el servicio de contacto</p></li>
 				</ul>
 			</div>
 			<footer class="popup-footer">
