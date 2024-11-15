@@ -311,13 +311,13 @@
 				>
 			</div>
 			<div class="body-card">
-
 				<p>
 					Ten en cuenta que, aunque tengas el acceso completo a la plataforma, algunas limitaciones que tendrás son:
 				</p>
 
 				<ul>
-					<li><p>Tu sesión no será guardada, por lo que tendrás que iniciar sesión nuevamente (función aún no implementada).</p></li>
+					<li><p>Tu sesión no será guardada, por lo que tendrás que iniciar sesión nuevamente
+					</p></li>
 					<li><p>Serás reconocido como "Invitado" y no por tu nombre de usuario.</p></li>
 					<li><p>Los certificados de cada curso tendrán como nombre "Invitado".</p></li>
 					<li><p>No podrás usar el servicio de contacto para enviar mensajes. (función aún no implementada).</p></li>

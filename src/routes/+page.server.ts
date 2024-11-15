@@ -46,13 +46,15 @@ export const actions: Actions = {
       .set({ token: authenticatedUser })
       .where(eq(usuarios.email, data.email));
 
-    cookies.set('session', authenticatedUser, {
-      // enviara la cookie en cada request
-      path: '/',
-      // vencimiento en 30 días
-      maxAge: 60 * 60 * 24 * 30,
-    });
-
+      // Configuración de la cookie para mantener la sesión activa
+      cookies.set('session', authenticatedUser, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30, // 30 días
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict'
+      });
+      
     // redirigir al usuario
     throw redirect(302, `/landing-page?username=${username}`);
   },

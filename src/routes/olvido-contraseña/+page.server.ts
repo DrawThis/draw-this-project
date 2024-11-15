@@ -1,4 +1,5 @@
 import type { Actions } from './$types';
+import { redirect } from '@sveltejs/kit'; 
 import { db } from '$lib/server/database/client';
 import { usuarios } from '$lib/server/database/data';
 import bcrypt from 'bcryptjs';
@@ -23,6 +24,8 @@ export const actions: Actions = {
       .set({ password: hashedPassword, resetToken: null })
       .where(eq(usuarios.resetToken, token));
 
-    return json({ success: true, message: 'Contraseña actualizada' });
+    // Redirecciona después de la actualización
+    throw redirect(302, `/landing-page`);
   },
 };
+
