@@ -40,3 +40,12 @@ export const usuarios =  sqliteTable('usuarios', {
 	token: text('token'),
 	resetToken: text("resetToken")
 });
+
+export const contacto = sqliteTable("contacto", {
+	id: text('id')
+	.primaryKey()
+	.$defaultFn(() => crypto.randomUUID()),
+	username: text("username").notNull(),
+	email: text("email").notNull(),
+	message: text("message").notNull(),
+});

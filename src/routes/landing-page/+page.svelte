@@ -1,7 +1,34 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
 	import '$lib/CSS/landing page.css';
+
+	let username: string = '';
+  	let email: string = '';
+  	let message: string = '';
+
+	const handleSubmit = async () => {
+	const formData = new FormData();
+	formData.append('username', username);
+	formData.append('email', email);
+	formData.append('message', message);
+
+	const response = await fetch('?/contact', {
+		method: 'POST',
+		body: formData,
+	});
+
+	if (response.ok) {
+      alert('Mensaje enviado correctamente');
+
+      // Limpiar el formulario
+      username = '';
+      email = '';
+      message = '';
+
+    } else {
+      alert('Error al enviar el mensaje');
+    }
+  };
 
 	export let data: { username: string };
 
@@ -81,9 +108,9 @@
 						<p class="message">Si es así, ¡esperamos que vuelvas <br /> pronto!</p>
 					</div>
 					<div class="actions">
-						<a href="/" data-sveltekit-reload data-sveltekit-preload-data="tap">
-							<button type="button" class="enviar">Salir</button>
-						</a>
+						<form method="POST" action="?/logout">
+							<button type="submit" class="enviar">Cerrar sesión</button>
+						  </form>
 					</div>
 				</div>
 			</div>
@@ -272,8 +299,7 @@
 				etc.
 			</p>
 			<p class="text-2">
-				Draw this no se hace responsable por robos de información personal, debido a que tu mensaje
-				pasa por un dominio de terceros.
+				Tus opiniones son importantes para nosotros, por favor, no dudes en compartir tus dudas e inquietudes, ¡que disfrutes tu experiencia en Draw This!
 			</p>
 			<p class="text-2">Gracias.</p>
 			<p class="text-2" style="font-weight: 600">-El equipo de Draw This</p>
@@ -281,18 +307,18 @@
 
 		<div class="contact-form">
 			<h3>Envíanos un mensaje</h3>
-			<form action="https://formsubmit.co/drawthis6@gmail.com" method="POST">
+			<form on:submit|preventDefault={handleSubmit}>
 				<div>
 					<label for="name">Nombre:</label>
-					<input type="text" id="name" name="name" placeholder="User123" required />
+					<input type="text" id="name" name="username" placeholder="User123" bind:value={username}  required />
 				</div>
 				<div>
 					<label for="email">Correo:</label>
-					<input type="email" id="email" name="email" placeholder="example123@gmail.com" required />
+					<input type="email" id="email" name="email" placeholder="example123@gmail.com" bind:value={email} required />
 				</div>
 				<div>
 					<label for="message">Mensaje:</label>
-					<textarea id="message" name="message" placeholder="Escribe tu mensaje aquí" required
+					<textarea id="message" name="message" placeholder="Escribe tu mensaje aquí" bind:value={message} required
 					></textarea>
 				</div>
 				<button type="submit" class="send">Enviar</button>

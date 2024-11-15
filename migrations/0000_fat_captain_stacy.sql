@@ -26,6 +26,15 @@ CREATE TABLE users (
 	email TEXT
 );
 
+-- Tabla contacto
+CREATE TABLE contacto (
+    id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+    username TEXT NOT NULL,
+    email TEXT NOT NULL,
+    message TEXT NOT NULL
+);
+
+
 -- Tabla usuarios
 CREATE TABLE usuarios (
 	id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),

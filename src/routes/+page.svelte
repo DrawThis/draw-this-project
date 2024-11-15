@@ -320,7 +320,6 @@
 					</p></li>
 					<li><p>Serás reconocido como "Invitado" y no por tu nombre de usuario.</p></li>
 					<li><p>Los certificados de cada curso tendrán como nombre "Invitado".</p></li>
-					<li><p>No podrás usar el servicio de contacto para enviar mensajes. (función aún no implementada).</p></li>
 				</ul>
 			</div>
 			<footer class="popup-footer">
