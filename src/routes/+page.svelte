@@ -2,6 +2,7 @@
 	import '$lib/CSS/inicio.css';
 	import logo from '$lib/IMAGES/IMG-20231013-WA0009.jpg';
 	import Icon from '@iconify/svelte';
+	import { onMount } from 'svelte';
 	export let form: { credentials?: boolean; user?: string } = {};
 
 	let isPopupVisible1 = false;
@@ -41,6 +42,32 @@
 		}
 	}
 
+
+
+	let emailInput: HTMLInputElement;
+	let rememberMe: boolean = false;
+
+	// Recuperar datos desde localStorage
+	onMount(() => {
+		const savedEmail = localStorage.getItem('email');
+		const savedRememberMe = localStorage.getItem('rememberMe') === 'true';
+
+		if (savedEmail) {
+			emailInput.value = savedEmail;
+		}
+		rememberMe = savedRememberMe;
+	});
+
+	// Guardar email y estado del checkbox en localStorage
+	function handleRememberMeChange() {
+		if (rememberMe) {
+			localStorage.setItem('email', emailInput.value);
+		} else {
+			localStorage.removeItem('email');
+		}
+		localStorage.setItem('rememberMe', String(rememberMe));
+	}
+
 	let showError = true;
 
 	function closeError() {
@@ -78,7 +105,14 @@
 			<h1>Inicia Sesión</h1>
 			<div class="input-box">
 				<label class="input-label" for="emailInput">Correo Electrónico</label>
-				<input type="email" name="email" placeholder="example@gmail.com" required id="emailInput" />
+				<input
+					bind:this={emailInput}
+					type="email"
+					name="email"
+					placeholder="example@gmail.com"
+					required
+					id="emailInput"
+				/>
 				<Icon icon="line-md:email-alt-twotone" class="i" />
 			</div>
 
@@ -100,14 +134,18 @@
 					on:click={() => togglePassword(1)}
 					aria-label="Toggle password visibility"
 					on:keypress={(e) => e.key === 'Enter' && togglePassword(1)}
-					><Icon
-						icon={passwordType1 === 'password' ? 'line-md:watch-off' : 'line-md:watch'}
-					/>
+					><Icon icon={passwordType1 === 'password' ? 'line-md:watch-off' : 'line-md:watch'} />
 				</button>
 			</div>
 			<div class="content">
 				<div class="checkbox">
-					<input type="checkbox" id="checkbox" name="remember"/>
+					<input
+						type="checkbox"
+						id="checkbox"
+						name="remember"
+						bind:checked={rememberMe}
+						on:change={handleRememberMeChange}
+					/>
 					<label for="checkbox">Recuerdame</label>
 				</div>
 				<div class="pass-link">
@@ -116,10 +154,16 @@
 					>
 				</div>
 			</div>
-			<button class="send" type="submit">Inicio</button> <!--BOTON DE INICIO DE SESIÓN-->
+			<button class="send" type="submit">Inicio</button>
+			<!--BOTON DE INICIO DE SESIÓN-->
 			<span class="line">Ó</span>
 			<div class="social-container">
-				<a href="#guest" class="social" on:click={togglePopup2} data-sveltekit-reload data-sveltekit-preload-data="tap"
+				<a
+					href="#guest"
+					class="social"
+					on:click={togglePopup2}
+					data-sveltekit-reload
+					data-sveltekit-preload-data="tap"
 					><Icon icon="line-md:person-search-filled" class="e" />ㅤModo Invitado</a
 				>
 			</div>
@@ -191,9 +235,10 @@
 					>Términos y Condiciones</a
 				>
 			</div>
-			<button class="send" type="submit">Registro</button> <!--BOTON DE REGISTRO-->
-			<br>
-			<br>
+			<button class="send" type="submit">Registro</button>
+			<!--BOTON DE REGISTRO-->
+			<br />
+			<br />
 			<p class="draw">DrawThis <span>© 2024</span></p>
 		</form>
 	</div>
@@ -312,12 +357,14 @@
 			</div>
 			<div class="body-card">
 				<p>
-					Ten en cuenta que, aunque tengas el acceso completo a la plataforma, algunas limitaciones que tendrás son:
+					Ten en cuenta que, aunque tengas el acceso completo a la plataforma, algunas limitaciones
+					que tendrás son:
 				</p>
 
 				<ul>
-					<li><p>Tu sesión no será guardada, por lo que tendrás que iniciar sesión nuevamente
-					</p></li>
+					<li>
+						<p>Tu sesión no será guardada, por lo que tendrás que iniciar sesión nuevamente</p>
+					</li>
 					<li><p>Serás reconocido como "Invitado" y no por tu nombre de usuario.</p></li>
 					<li><p>Los certificados de cada curso tendrán como nombre "Invitado".</p></li>
 				</ul>
@@ -330,5 +377,3 @@
 		</div>
 	</div>
 {/if}
-
-
