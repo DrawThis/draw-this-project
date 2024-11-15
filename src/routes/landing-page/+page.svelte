@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import '$lib/CSS/landing page.css';
 
-	let username = $page.url.searchParams.get('username') || 'Invitado';
+	export let data: { username: string };
 
 	import {
 		logo,
@@ -94,7 +94,7 @@
 <div class="header">
 	<div class="contenedor">
 		<div class="header-texto">
-			<h1>Bienvenido a <br /> <span>Draw This</span>, <br /> <div class="user">{username || 'Invitado'}!</div></h1>
+			<h1>Bienvenido a <br /> <span>Draw This</span>, <br /> <div class="user">{data.username || 'Invitado'}!</div></h1>
 			<br />
 			<p>¡La Página que sacará tus dotes<br /> artísticos y los pondra a prueba!</p>
 			<br />

@@ -6,19 +6,19 @@ import { redirect } from '@sveltejs/kit'
 export const handle = async ({ event, resolve }) => {
     const session = event.cookies.get('session');
 
+    // Verificar si hay sesión activa
     if (session) {
-        // Buscar el usuario con el token de sesión
         const user = await db.select().from(usuarios).where(eq(usuarios.token, session));
 
         if (user && user.length > 0) {
             event.locals.user = user[0];
-            
-            // Redirigir al usuario si intenta acceder a la página de login estando autenticado
+
+            // Si el usuario ya está autenticado y está intentando acceder a la página de login, redirigirlo a la landing page
             if (event.url.pathname === '/') {
                 throw redirect(302, '/landing-page');
             }
         } else {
-            // Eliminar la cookie si la sesión no es válida
+            // Eliminar la cookie si el token no es válido
             event.cookies.set('session', '', {
                 path: '/',
                 expires: new Date(0),
@@ -26,5 +26,6 @@ export const handle = async ({ event, resolve }) => {
         }
     }
 
+    // Continuar con la resolución de la solicitud
     return await resolve(event);
 };
