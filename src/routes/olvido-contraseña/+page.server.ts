@@ -25,7 +25,7 @@ export const actions: Actions = {
       .where(eq(usuarios.resetToken, token));
 
     // Redirecciona después de la actualización
-    throw redirect(302, `/landing-page`);
+    throw redirect(302, `/`);
   },
 };
 
