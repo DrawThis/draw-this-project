@@ -42,8 +42,6 @@
 		}
 	}
 
-
-
 	let emailInput: HTMLInputElement;
 	let rememberMe: boolean = false;
 
@@ -68,32 +66,57 @@
 		localStorage.setItem('rememberMe', String(rememberMe));
 	}
 
-	let showError = true;
+	let show = true;
 
-	function closeError() {
-		showError = false;
+	function close() {
+		show = false;
 	}
+
+	let showSuccessMessage = false;
+
+    onMount(() => {
+        // Verifica si existe la marca de éxito en localStorage
+        if (localStorage.getItem('registered') === 'true') {
+            showSuccessMessage = true;
+            // Limpia la marca después de mostrar el mensaje
+            localStorage.removeItem('registered');
+        }
+    });
+
+    function handleRegisterSubmit(event: Event) {
+        // Antes de enviar el formulario, marca el registro como exitoso
+        localStorage.setItem('registered', 'true');
+    }
 </script>
 
 <svelte:head>
 	<title>Bienvenido a Draw This</title>
 </svelte:head>
 
-{#if form?.credentials && showError}
+{#if form?.credentials && show}
 	<div class="error">
-		<Icon icon="carbon:warning" class="error-icon" />
-		<div class="error-title">Correo o contraseña inválido</div>
-		<Icon icon="material-symbols:close" class="error-close" onclick={closeError} />
+		<Icon icon="carbon:warning" class="icon" />
+		<div class="icon-title">Correo o contraseña inválido</div>
+		<Icon icon="material-symbols:close" class="icon-close" onclick={close} />
 	</div>
 {/if}
 
-{#if form?.user && showError}
+{#if form?.user && show}
 	<div class="error">
-		<Icon icon="carbon:warning" class="error-icon" />
-		<div class="error-title">El correo ya se encuentra registrado</div>
-		<Icon icon="material-symbols:close" class="error-close" onclick={closeError} />
+		<Icon icon="carbon:warning" class="icon" />
+		<div class="icon-title">El correo ya se encuentra registrado</div>
+		<Icon icon="material-symbols:close" class="icon-close" onclick={close} />
 	</div>
 {/if}
+
+{#if showSuccessMessage && show}
+	<div class="success">
+		<Icon icon="mdi:sucess-outline" class="icon" />
+		<div class="icon-title">Cuenta registrada con éxito</div>
+		<Icon icon="material-symbols:close" class="icon-close" onclick={close} />
+	</div>
+{/if}
+
 
 <div class="container" class:right-panel-active={rightPanelActive}>
 	<div class="form-container login-container">
@@ -176,7 +199,7 @@
 
 		<!--FORMULARIO DE REGISTRO-->
 
-		<form action="?/register" method="POST">
+		<form action="?/register" method="POST" on:submit={handleRegisterSubmit}>
 			<h1>Registrate</h1>
 			<div class="input-box">
 				<label class="input-label" for="usernameInput">Usuario</label>

@@ -88,6 +88,6 @@ export const actions: Actions = {
       token: crypto.randomUUID(),
     });
     
-    throw redirect(303, `/landing-page?username=${data.username}`);
+    throw redirect(303, `/`);
   },
 };

@@ -5,7 +5,7 @@
 
 <div class="header-container">
 	<div class="header">
-		<h1>bibliografias</h1>
+		<h1>Bibliografías</h1>
 	</div>
 </div>
 
