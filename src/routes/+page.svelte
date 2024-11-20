@@ -72,6 +72,8 @@
 		show = false;
 	}
 
+	// MENSAJE DE EXITO (SUCCESS)
+
 	let showSuccessMessage = false;
 
     onMount(() => {
@@ -111,7 +113,7 @@
 
 {#if showSuccessMessage && show}
 	<div class="success">
-		<Icon icon="mdi:sucess-outline" class="icon" />
+		<Icon icon="mdi:check-bold" class="icon" />
 		<div class="icon-title">Cuenta registrada con éxito</div>
 		<Icon icon="material-symbols:close" class="icon-close" onclick={close} />
 	</div>

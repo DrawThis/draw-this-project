@@ -1,5 +1,31 @@
 <script lang="ts">
 	import '$lib/CSS/peticion correo.css';
+	import { onMount } from 'svelte';
+	import Icon from '@iconify/svelte';
+
+	let show = true;
+
+	function close() {
+		show = false;
+	}
+
+	// MENSAJE DE EXITO (SUCCESS)
+
+	let showSuccessMessage = false;
+
+    onMount(() => {
+        // Verifica si existe la marca de éxito en localStorage
+        if (localStorage.getItem('registered') === 'true') {
+            showSuccessMessage = true;
+            // Limpia la marca después de mostrar el mensaje
+            localStorage.removeItem('registered');
+        }
+    });
+
+    function handleRegisterSubmit(event: Event) {
+        // Antes de enviar el formulario, marca el registro como exitoso
+        localStorage.setItem('registered', 'true');
+    }
 </script>
 
 <svelte:head>
@@ -8,13 +34,21 @@
 	<title>Recupera tu contraseña</title>
 </svelte:head>
 
+{#if showSuccessMessage && show}
+	<div class="success">
+		<Icon icon="mdi:check-bold" class="icon" />
+		<div class="icon-title">Hemos enviado un correo para restablecer tu contraseña</div>
+		<Icon icon="material-symbols:close" class="icon-close" onclick={close} />
+	</div>
+{/if}
+
 <div class="container">
 	<span class="title"><h2>Recuperación de Contraseña</h2></span>
 	<p class="message">
 		Por favor ingresa el Correo Electrónico con el que iniciaste sesión en Draw This
 	</p>
 	<br />
-	<form method="POST" action="?/forgotPassword">
+	<form action="?/forgotPassword" method="POST" on:submit={handleRegisterSubmit}>
 		<div class="input-group">
 			<label class="label" for="email">Correo Electrónico</label>
 			<input
