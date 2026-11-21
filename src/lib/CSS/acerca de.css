@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:300,500,700,800&display=swap');
 
 * {
-	margin: 10px;
+	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
 	font-family: 'Poppins', sans-serif;
@@ -12,6 +12,8 @@ body {
 }
 
 .black {
+	padding-top: 40px;
+	padding-left: 5px;
 	color: black;
 }
 
@@ -151,7 +153,7 @@ h3 {
 }
 
 img {
-   width: 100%;
+	width: 100%;
 }
 
 .words {
@@ -163,4 +165,67 @@ img {
 	flex-direction: column;
 	width: 40%;
 	color: black;
+}
+
+@media (max-width: 767px) {
+	body {
+		overflow-x: hidden;
+	}
+
+	.header-container {
+		min-height: 64px !important;
+		padding: 12px 12px 12px 118px !important;
+		display: flex !important;
+		align-items: center !important;
+	}
+
+	.header {
+		text-align: left !important;
+		padding-left: 0 !important;
+		margin-left: 0 !important;
+	}
+
+	.header h1 {
+		font-size: clamp(1.05rem, 4.6vw, 1.4rem) !important;
+		white-space: nowrap !important;
+		line-height: 1.2 !important;
+	}
+
+	.words {
+		flex-direction: column !important;
+		align-items: center !important;
+		margin-top: 0 !important;
+		padding-top: 96px !important;
+		padding-left: 16px !important;
+		padding-right: 16px !important;
+		gap: 16px !important;
+	}
+
+	.mini-words {
+		width: 100% !important;
+		text-align: left !important;
+	}
+
+	.container-box {
+		flex-direction: column !important;
+		align-items: center !important;
+		gap: 16px !important;
+		padding: 0 16px 24px !important;
+	}
+
+	.info-box,
+	.mini-card {
+		width: 100% !important;
+		height: auto !important;
+	}
+
+	.back {
+		position: fixed !important;
+		top: 10px !important;
+		left: 10px !important;
+		width: 96px !important;
+		height: 44px !important;
+		min-height: 44px !important;
+		z-index: 12 !important;
+	}
 }

@@ -192,7 +192,7 @@
 					><Icon icon="line-md:person-search-filled" class="e" />ㅤModo Invitado</a
 				>
 			</div>
-			<p class="draw">DrawThis <span>© 2024</span></p>
+			<p class="draw">DrawThis <span>© 2027</span></p>
 		</form>
 	</div>
 
@@ -264,7 +264,7 @@
 			<!--BOTON DE REGISTRO-->
 			<br />
 			<br />
-			<p class="draw">DrawThis <span>© 2024</span></p>
+			<p class="draw">DrawThis <span>© 2027</span></p>
 		</form>
 	</div>
 

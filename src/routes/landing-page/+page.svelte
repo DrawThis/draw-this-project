@@ -48,6 +48,7 @@
 	import Icon from '@iconify/svelte';
 
 	let currentSlide = 0;
+	let menuAbierto = false;
 
 	onMount(() => {
 		const interval = setInterval(() => {
@@ -80,15 +81,18 @@
 <div class="menu-container">
 	<nav>
 		<img src={logo} alt="" class="logo" />
-		<ul class="menu">
+		<button class="hamburger-btn" aria-label="Abrir menú" on:click={() => menuAbierto = !menuAbierto}>
+			<Icon icon="line-md:menu" />
+		</button>
+		<ul class="menu" class:active={menuAbierto}>
 			<li>
-				<a href="/ingreso-cursos" data-sveltekit-reload data-sveltekit-preload-data="tap">Cursos</a>
+				<a href="/ingreso-cursos" data-sveltekit-reload data-sveltekit-preload-data="tap" on:click={() => menuAbierto = false}>Cursos</a>
 			</li>
-			<li><a href="#contact" data-sveltekit-preload-data="tap">Contacto</a></li>
+			<li><a href="#contact" data-sveltekit-preload-data="tap" on:click={() => menuAbierto = false}>Contacto</a></li>
 			<li>
-				<a href="/acerca-de" data-sveltekit-reload data-sveltekit-preload-data="tap">Acerca de</a>
+				<a href="/acerca-de" data-sveltekit-reload data-sveltekit-preload-data="tap" on:click={() => menuAbierto = false}>Acerca de</a>
 			</li>
-			<li><button on:click={togglePopup2} class="custom-button">Volver</button></li>
+			<li><button on:click={() => { togglePopup2(); menuAbierto = false; }} class="custom-button">Volver</button></li>
 		</ul>
 	</nav>
 
