@@ -33,53 +33,75 @@
 		ctx.fillStyle = selectedColor;
 	};
 
-	const drawRect = (e: MouseEvent) => {
+	// Convierte la posición del puntero (mouse/touch/stylus) a coordenadas reales del canvas,
+	// escalando según el tamaño visual actual del <canvas>.
+	const getCanvasPos = (e: PointerEvent) => {
+		const rect = canvas!.getBoundingClientRect();
+		const scaleX = canvas!.width / rect.width;
+		const scaleY = canvas!.height / rect.height;
+		return {
+			x: (e.clientX - rect.left) * scaleX,
+			y: (e.clientY - rect.top) * scaleY
+		};
+	};
+
+	const drawRect = (e: PointerEvent) => {
 		if (!ctx || !canvas) return;
+		const pos = getCanvasPos(e);
 		if (!fillColor?.checked) {
-			ctx.strokeRect(e.offsetX, e.offsetY, prevMouseX - e.offsetX, prevMouseY - e.offsetY);
+			ctx.strokeRect(pos.x, pos.y, prevMouseX - pos.x, prevMouseY - pos.y);
 		} else {
-			ctx.fillRect(e.offsetX, e.offsetY, prevMouseX - e.offsetX, prevMouseY - e.offsetY);
+			ctx.fillRect(pos.x, pos.y, prevMouseX - pos.x, prevMouseY - pos.y);
 		}
 	};
 
-	const drawCircle = (e: MouseEvent) => {
+	const drawCircle = (e: PointerEvent) => {
 		if (!ctx) return;
+		const pos = getCanvasPos(e);
 		ctx.beginPath();
-		const radiusX = Math.abs(prevMouseX - e.offsetX); // Radio en X
-		const radiusY = Math.abs(prevMouseY - e.offsetY); // Radio en Y
+		const radiusX = Math.abs(prevMouseX - pos.x); // Radio en X
+		const radiusY = Math.abs(prevMouseY - pos.y); // Radio en Y
 		ctx.ellipse(prevMouseX, prevMouseY, radiusX, radiusY, 0, 0, 2 * Math.PI);
 		fillColor?.checked ? ctx.fill() : ctx.stroke();
 	};
 
-	const drawTriangle = (e: MouseEvent) => {
+	const drawTriangle = (e: PointerEvent) => {
 		if (!ctx) return;
+		const pos = getCanvasPos(e);
 		ctx.beginPath();
 		ctx.moveTo(prevMouseX, prevMouseY);
-		ctx.lineTo(e.offsetX, e.offsetY);
-		ctx.lineTo(prevMouseX * 2 - e.offsetX, e.offsetY);
+		ctx.lineTo(pos.x, pos.y);
+		ctx.lineTo(prevMouseX * 2 - pos.x, pos.y);
 		ctx.closePath();
 		fillColor?.checked ? ctx.fill() : ctx.stroke();
 	};
 
-	const startDraw = (e: MouseEvent) => {
-		if (!ctx) return;
+	const startDraw = (e: PointerEvent) => {
+		if (!ctx || !canvas) return;
+		e.preventDefault();
 		isDrawing = true;
-		prevMouseX = e.offsetX;
-		prevMouseY = e.offsetY;
+		const pos = getCanvasPos(e);
+		prevMouseX = pos.x;
+		prevMouseY = pos.y;
 		ctx.beginPath();
 		ctx.lineWidth = brushWidth;
 		ctx.strokeStyle = selectedColor;
 		ctx.fillStyle = selectedColor;
-		snapshot = ctx.getImageData(0, 0, canvas!.width, canvas!.height);
+		snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		if (canvas.setPointerCapture) {
+			canvas.setPointerCapture(e.pointerId);
+		}
 	};
 
-	const drawing = (e: MouseEvent) => {
+	const drawing = (e: PointerEvent) => {
 		if (!isDrawing || !ctx) return;
+		e.preventDefault();
 		ctx.putImageData(snapshot, 0, 0);
 
 		if (selectedTool === 'brush' || selectedTool === 'eraser') {
+			const pos = getCanvasPos(e);
 			ctx.strokeStyle = selectedTool === 'eraser' ? '#fff' : selectedColor;
-			ctx.lineTo(e.offsetX, e.offsetY);
+			ctx.lineTo(pos.x, pos.y);
 			ctx.stroke();
 		} else if (selectedTool === 'rectangle') {
 			drawRect(e);
@@ -87,6 +109,13 @@
 			drawCircle(e);
 		} else {
 			drawTriangle(e);
+		}
+	};
+
+	const stopDraw = (e: PointerEvent) => {
+		isDrawing = false;
+		if (canvas && canvas.hasPointerCapture && canvas.hasPointerCapture(e.pointerId)) {
+			canvas.releasePointerCapture(e.pointerId);
 		}
 	};
 
@@ -150,9 +179,12 @@
 			link.click();
 		});
 
-		canvas?.addEventListener('mousedown', startDraw);
-		canvas?.addEventListener('mousemove', drawing);
-		canvas?.addEventListener('mouseup', () => (isDrawing = false));
+		// Eventos de puntero (unifican mouse, táctil y stylus) con prevención de scroll
+		canvas?.addEventListener('pointerdown', startDraw);
+		canvas?.addEventListener('pointermove', drawing);
+		canvas?.addEventListener('pointerup', stopDraw);
+		canvas?.addEventListener('pointercancel', stopDraw);
+		canvas?.addEventListener('pointerleave', stopDraw);
 	});
 
 	let modal: HTMLElement | null = null;

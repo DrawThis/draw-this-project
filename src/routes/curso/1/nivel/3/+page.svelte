@@ -19,7 +19,7 @@
 	let saveImg: HTMLElement | null = null;
 
 	// Variables globales con valores predeterminados
-	let prevMouseX: number, prevMouseY: number, snapshot: ImageData;
+	let snapshot: ImageData;
 	let isDrawing = false;
 	let selectedTool = 'brush';
 	let brushWidth = 5;
@@ -32,26 +32,49 @@
 		ctx.fillStyle = selectedColor;
 	};
 
-	const startDraw = (e: MouseEvent) => {
-		if (!ctx) return;
+	// Convierte la posición del puntero (mouse/touch/stylus) a coordenadas reales del canvas,
+	// escalando según el tamaño visual actual del <canvas>.
+	const getCanvasPos = (e: PointerEvent) => {
+		const rect = canvas!.getBoundingClientRect();
+		const scaleX = canvas!.width / rect.width;
+		const scaleY = canvas!.height / rect.height;
+		return {
+			x: (e.clientX - rect.left) * scaleX,
+			y: (e.clientY - rect.top) * scaleY
+		};
+	};
+
+	const startDraw = (e: PointerEvent) => {
+		if (!ctx || !canvas) return;
+		e.preventDefault();
 		isDrawing = true;
-		prevMouseX = e.offsetX;
-		prevMouseY = e.offsetY;
 		ctx.beginPath();
 		ctx.lineWidth = brushWidth;
 		ctx.strokeStyle = selectedColor;
 		ctx.fillStyle = selectedColor;
-		snapshot = ctx.getImageData(0, 0, canvas!.width, canvas!.height);
+		snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		if (canvas.setPointerCapture) {
+			canvas.setPointerCapture(e.pointerId);
+		}
 	};
 
-	const drawing = (e: MouseEvent) => {
+	const drawing = (e: PointerEvent) => {
 		if (!isDrawing || !ctx) return;
+		e.preventDefault();
 		ctx.putImageData(snapshot, 0, 0);
 
 		if (selectedTool === 'brush' || selectedTool === 'eraser') {
+			const pos = getCanvasPos(e);
 			ctx.strokeStyle = selectedTool === 'eraser' ? '#c2a861' : selectedColor;
-			ctx.lineTo(e.offsetX, e.offsetY);
+			ctx.lineTo(pos.x, pos.y);
 			ctx.stroke();
+		}
+	};
+
+	const stopDraw = (e: PointerEvent) => {
+		isDrawing = false;
+		if (canvas && canvas.hasPointerCapture && canvas.hasPointerCapture(e.pointerId)) {
+			canvas.releasePointerCapture(e.pointerId);
 		}
 	};
 
@@ -114,9 +137,12 @@
 			link.click();
 		});
 
-		canvas?.addEventListener('mousedown', startDraw);
-		canvas?.addEventListener('mousemove', drawing);
-		canvas?.addEventListener('mouseup', () => (isDrawing = false));
+		// Eventos de puntero (unifican mouse, táctil y stylus) con prevención de scroll
+		canvas?.addEventListener('pointerdown', startDraw);
+		canvas?.addEventListener('pointermove', drawing);
+		canvas?.addEventListener('pointerup', stopDraw);
+		canvas?.addEventListener('pointercancel', stopDraw);
+		canvas?.addEventListener('pointerleave', stopDraw);
 	});
 
 	let modal: HTMLElement | null = null;
@@ -178,11 +204,11 @@
 				<label class="title" for="">Opciones</label>
 				<ul class="options">
 					<li class="option active tool" id="brush">
-						<img src={ brush } alt="" />
+						<img src={brush} alt="" />
 						<span>Pincel</span>
 					</li>
 					<li class="option tool" id="eraser">
-						<img src={ eraser } alt="" />
+						<img src={eraser} alt="" />
 						<span>Borrador</span>
 					</li>
 					<li class="option">

@@ -48,4 +48,27 @@ button.next:hover .i {
   transform: translateX(3px)
 }
 
+/* En móvil/tablet el botón se desplaza a la izquierda para no cortarse
+   en el borde derecho; en escritorio (>= 1024px) se mantiene intacto. */
+@media (max-width: 1023px) {
+  button {
+    left: auto;
+    right: 20px;
+    bottom: 20px;
+    z-index: 999;
+  }
+}
+
+@media (max-width: 767px) {
+  button {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  button.next {
+    width: 44px;
+    height: 44px;
+  }
+}
+
 </style>

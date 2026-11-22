@@ -188,10 +188,19 @@
 
 @media (max-width: 1024px) {
   nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
     height: 56px;
     padding: 0 16px;
     justify-content: space-between;
     box-sizing: border-box;
+  }
+
+  body {
+    padding-top: 56px;
   }
 
   .logo {
