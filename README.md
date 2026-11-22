@@ -1,42 +1,76 @@
-# information
+# 🎨 Draw This
 
-MANTENIDO ACTUALMENTE POR @CristianUribePosada
+**Draw This** es una plataforma web interactiva diseñada para aprender fundamentos y técnicas de dibujo de forma progresiva, combinando teoría ilustrada, cuestionarios de refuerzo, lienzos de práctica digital y generación de certificados al completar cada curso.
 
-# create-svelte
+---
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+## ✨ Características principales
 
-## Creating a project
+- **Rutas de aprendizaje estructuradas:** Múltiples cursos temáticos (Historia del arte, Fundamentos de dibujo, Perspectiva, Anatomía, Puntillismo, Pixel Art y más) divididos en niveles teóricos, evaluativos y prácticos.
+- **Lienzo de dibujo interactivo (Canvas):** Herramientas integradas de pincel, borrador, selector de color, control de grosor, limpieza de lienzo y descarga de ilustraciones, con soporte completo tanto para ratón en escritorio como para pantallas táctiles (móvil y tablet).
+- **Diseño 100% Responsive:** Interfaz adaptable a dispositivos móviles, tablets y ordenadores de escritorio.
+- **Gestión de usuarios y progreso:** Registro, inicio de sesión, recuperación de contraseña y desbloqueo progresivo de niveles.
+- **Certificación:** Generación y descarga de certificados personalizados al finalizar cada curso.
 
-If you're seeing this, you've probably already done this step. Congrats!
+---
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## 🛠️ Stack tecnológico
 
-# create a new project in my-app
-npm create svelte@latest my-app
+- **Frontend & Framework:** [SvelteKit](https://kit.svelte.dev/) / [Svelte 5](https://svelte.dev/) + TypeScript
+- **Base de datos & ORM:** [Drizzle ORM](https://orm.drizzle.team/) + LibSQL / Turso
+- **Runtime & Gestor de paquetes:** [Bun](https://bun.sh/)
+- **Despliegue:** [Vercel](https://vercel.com/)
+
+---
+
+## 📁 Estructura del proyecto
+
+```text
+draw-this-project/
+├── drizzle/ & migrations/   # Esquemas y migraciones de la base de datos
+├── src/
+│   ├── lib/
+│   │   ├── CSS/             # Hojas de estilo globales y compartidas
+│   │   ├── IMAGES/          # Recursos gráficos organizados por curso
+│   │   ├── navbar1..10/     # Barras de navegación y progreso por curso
+│   │   └── server/database/ # Conexión, cliente y esquema Drizzle ORM
+│   ├── routes/
+│   │   ├── curso/[id]/      # Niveles teóricos, prácticos, cuestionarios y certificados
+│   │   ├── landing-page/    # Página principal de presentación
+│   │   ├── ingreso-cursos/  # Selector general de cursos disponibles
+│   │   ├── acerca-de/       # Información sobre el proyecto
+│   │   └── bibliografias/   # Referencias y material de apoyo
+│   └── hooks.server.ts      # Gestión de sesiones y middleware del servidor
+├── static/                  # Favicons y logotipos principales
+├── drizzle.config.ts        # Configuración de Drizzle Kit
+└── svelte.config.js         # Configuración de SvelteKit y adaptador Vercel
 ```
 
-## Developing
+---
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## 🚀 Instalación y ejecución local
 
-```bash
-npm run dev
+1. **Clonar el repositorio:**
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+   ```bash
+   git clone https://github.com/DrawThis/draw-this-project.git
+   cd draw-this-project
+   ```
 
-## Building
+2. **Instalar dependencias:**
 
-To create a production version of your app:
+   ```bash
+   bun install
+   ```
 
-```bash
-npm run build
-```
+3. **Iniciar el servidor de desarrollo:**
+   ```bash
+   bun run dev
+   ```
+   La aplicación estará disponible en `http://localhost:5173`.
 
-You can preview the production build with `npm run preview`.
+---
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## 📄 Licencia
+
+Este proyecto fue desarrollado con fines educativos y de aprendizaje artístico.
