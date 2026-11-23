@@ -32,61 +32,87 @@
 		ctx.fillStyle = selectedColor;
 	};
 
-	const drawRect = (e: MouseEvent) => {
+		// Convierte la posición del puntero (mouse/touch/stylus) a coordenadas reales del canvas,
+	// escalando según el tamaño visual actual del <canvas>.
+	const getCanvasPos = (e: PointerEvent) => {
+		const rect = canvas!.getBoundingClientRect();
+		const scaleX = canvas!.width / rect.width;
+		const scaleY = canvas!.height / rect.height;
+		return {
+			x: (e.clientX - rect.left) * scaleX,
+			y: (e.clientY - rect.top) * scaleY
+		};
+	};
+
+	const drawRect = (pos: { x: number; y: number }) => {
 		if (!ctx || !canvas) return;
 		if (!fillColor?.checked) {
-			ctx.strokeRect(e.offsetX, e.offsetY, prevMouseX - e.offsetX, prevMouseY - e.offsetY);
+			ctx.strokeRect(pos.x, pos.y, prevMouseX - pos.x, prevMouseY - pos.y);
 		} else {
-			ctx.fillRect(e.offsetX, e.offsetY, prevMouseX - e.offsetX, prevMouseY - e.offsetY);
+			ctx.fillRect(pos.x, pos.y, prevMouseX - pos.x, prevMouseY - pos.y);
 		}
 	};
 
-	const drawCircle = (e: MouseEvent) => {
+	const drawCircle = (pos: { x: number; y: number }) => {
 		if (!ctx) return;
 		ctx.beginPath();
 		const radius = Math.sqrt(
-			Math.pow(prevMouseX - e.offsetX, 2) + Math.pow(prevMouseY - e.offsetY, 2)
+			Math.pow(prevMouseX - pos.x, 2) + Math.pow(prevMouseY - pos.y, 2)
 		);
 		ctx.arc(prevMouseX, prevMouseY, radius, 0, 2 * Math.PI);
 		fillColor?.checked ? ctx.fill() : ctx.stroke();
 	};
 
-	const drawTriangle = (e: MouseEvent) => {
+	const drawTriangle = (pos: { x: number; y: number }) => {
 		if (!ctx) return;
 		ctx.beginPath();
 		ctx.moveTo(prevMouseX, prevMouseY);
-		ctx.lineTo(e.offsetX, e.offsetY);
-		ctx.lineTo(prevMouseX * 2 - e.offsetX, e.offsetY);
+		ctx.lineTo(pos.x, pos.y);
+		ctx.lineTo(prevMouseX * 2 - pos.x, pos.y);
 		ctx.closePath();
 		fillColor?.checked ? ctx.fill() : ctx.stroke();
 	};
 
-	const startDraw = (e: MouseEvent) => {
-		if (!ctx) return;
+	const startDraw = (e: PointerEvent) => {
+		if (!ctx || !canvas) return;
+		e.preventDefault();
 		isDrawing = true;
-		prevMouseX = e.offsetX;
-		prevMouseY = e.offsetY;
+		const pos = getCanvasPos(e);
+		prevMouseX = pos.x;
+		prevMouseY = pos.y;
 		ctx.beginPath();
 		ctx.lineWidth = brushWidth;
 		ctx.strokeStyle = selectedColor;
 		ctx.fillStyle = selectedColor;
-		snapshot = ctx.getImageData(0, 0, canvas!.width, canvas!.height);
+		snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		if (canvas.setPointerCapture) {
+			canvas.setPointerCapture(e.pointerId);
+		}
 	};
 
-	const drawing = (e: MouseEvent) => {
+	const drawing = (e: PointerEvent) => {
 		if (!isDrawing || !ctx) return;
+		e.preventDefault();
+		const pos = getCanvasPos(e);
 		ctx.putImageData(snapshot, 0, 0);
 
 		if (selectedTool === 'brush' || selectedTool === 'eraser') {
 			ctx.strokeStyle = selectedTool === 'eraser' ? '#fff' : selectedColor;
-			ctx.lineTo(e.offsetX, e.offsetY);
+			ctx.lineTo(pos.x, pos.y);
 			ctx.stroke();
 		} else if (selectedTool === 'rectangle') {
-			drawRect(e);
+			drawRect(pos);
 		} else if (selectedTool === 'circle') {
-			drawCircle(e);
+			drawCircle(pos);
 		} else {
-			drawTriangle(e);
+			drawTriangle(pos);
+		}
+	};
+
+	const stopDraw = (e: PointerEvent) => {
+		isDrawing = false;
+		if (canvas && canvas.hasPointerCapture && canvas.hasPointerCapture(e.pointerId)) {
+			canvas.releasePointerCapture(e.pointerId);
 		}
 	};
 
@@ -150,9 +176,12 @@
 			link.click();
 		});
 
-		canvas?.addEventListener('mousedown', startDraw);
-		canvas?.addEventListener('mousemove', drawing);
-		canvas?.addEventListener('mouseup', () => (isDrawing = false));
+				// Eventos de puntero (unifican mouse, táctil y stylus) con prevención de scroll
+		canvas?.addEventListener('pointerdown', startDraw);
+		canvas?.addEventListener('pointermove', drawing);
+		canvas?.addEventListener('pointerup', stopDraw);
+		canvas?.addEventListener('pointercancel', stopDraw);
+		canvas?.addEventListener('pointerleave', stopDraw);
 	});
 
 	let modal: HTMLElement | null = null;

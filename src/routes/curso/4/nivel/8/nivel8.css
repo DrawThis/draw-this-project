@@ -11,6 +11,13 @@ body.nivel-8 #rombo-4 {
 	margin: 0 6px;
 }
 
+
+body.nivel-8 {
+	min-height: 100dvh;
+	background-color: #fff;
+	overflow-x: hidden;
+}
+
 .container {
 	display: flex;
 	flex-direction: column;
@@ -38,4 +45,40 @@ body.nivel-8 #rombo-4 {
 	margin-top: 10px;
 	text-align: center;
 	margin-right: 53%;
+}
+
+@media (max-width: 1023px) {
+	.container {
+		padding: 10px 16px 90px;
+		box-sizing: border-box;
+	}
+
+	.video-container {
+		width: 100%;
+		max-width: 900px;
+		padding-bottom: 56.25%;
+		border-width: 5px;
+	}
+
+	.video-link {
+		margin-right: 0;
+		padding: 0 16px;
+	}
+}
+
+@media (max-width: 767px) {
+	.container {
+		padding: 62px 10px 80px;
+	}
+
+	.video-container {
+		width: 100%;
+		padding-bottom: 56.25%;
+		border-width: 4px;
+	}
+
+	.video-link {
+		margin-top: 8px;
+		font-size: 0.9rem;
+	}
 }

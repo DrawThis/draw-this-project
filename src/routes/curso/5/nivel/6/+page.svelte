@@ -33,48 +33,60 @@
 		ctx.fillStyle = selectedColor;
 	};
 
-	const startDraw = (e: MouseEvent) => {
-		if (!ctx) return;
+		// Convierte la posición del puntero (mouse/touch/stylus) a coordenadas reales del canvas,
+	// escalando según el tamaño visual actual del <canvas>.
+	const getCanvasPos = (e: PointerEvent) => {
+		const rect = canvas!.getBoundingClientRect();
+		const scaleX = canvas!.width / rect.width;
+		const scaleY = canvas!.height / rect.height;
+		return {
+			x: (e.clientX - rect.left) * scaleX,
+			y: (e.clientY - rect.top) * scaleY
+		};
+	};
+
+	const startDraw = (e: PointerEvent) => {
+		if (!ctx || !canvas) return;
+		e.preventDefault();
 		isDrawing = true;
-		prevMouseX = e.offsetX;
-		prevMouseY = e.offsetY;
+		const pos = getCanvasPos(e);
+		prevMouseX = pos.x;
+		prevMouseY = pos.y;
 		ctx.beginPath();
 		ctx.lineWidth = brushWidth;
 		ctx.strokeStyle = selectedColor;
 		ctx.fillStyle = selectedColor;
-		snapshot = ctx.getImageData(0, 0, canvas!.width, canvas!.height);
+		snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		if (canvas.setPointerCapture) {
+			canvas.setPointerCapture(e.pointerId);
+		}
 	};
 
-	const drawing = (e: MouseEvent) => {
+	const drawing = (e: PointerEvent) => {
 		if (!isDrawing || !ctx) return;
+		e.preventDefault();
+		const pos = getCanvasPos(e);
 		ctx.putImageData(snapshot, 0, 0);
-
-		// Dibuja una línea recta desde el punto inicial hasta el punto actual
 		if (selectedTool === 'brush') {
 			ctx.beginPath();
-			ctx.moveTo(prevMouseX, prevMouseY); // Punto inicial
-			ctx.lineTo(e.offsetX, e.offsetY); // Punto actual (fin de la línea)
+			ctx.moveTo(prevMouseX, prevMouseY);
+			ctx.lineTo(pos.x, pos.y);
 			ctx.stroke();
-		} 
+		}
 
 		if (selectedTool === 'eraser') {
-			ctx.strokeStyle = selectedTool === 'eraser' ? '#fff' : selectedColor;
-			ctx.lineTo(e.offsetX, e.offsetY);
+			ctx.strokeStyle = '#fff';
+			ctx.lineTo(pos.x, pos.y);
 			ctx.stroke();
 		}
 	};
 
-	const endDraw = () => {
+	const stopDraw = (e: PointerEvent) => {
 		isDrawing = false;
+		if (canvas && canvas.hasPointerCapture && canvas.hasPointerCapture(e.pointerId)) {
+			canvas.releasePointerCapture(e.pointerId);
+		}
 	};
-
-	// Actualiza los eventos para incluir endDraw cuando sueltes el mouse
-	onMount(() => {
-		canvas?.addEventListener('mousedown', startDraw);
-		canvas?.addEventListener('mousemove', drawing);
-		canvas?.addEventListener('mouseup', endDraw);
-		canvas?.addEventListener('mouseleave', endDraw);
-	});
 
 	onMount(() => {
 		canvas = document.querySelector('canvas');
@@ -136,9 +148,12 @@
 			link.click();
 		});
 
-		canvas?.addEventListener('mousedown', startDraw);
-		canvas?.addEventListener('mousemove', drawing);
-		canvas?.addEventListener('mouseup', () => (isDrawing = false));
+				// Eventos de puntero (unifican mouse, táctil y stylus) con prevención de scroll
+		canvas?.addEventListener('pointerdown', startDraw);
+		canvas?.addEventListener('pointermove', drawing);
+		canvas?.addEventListener('pointerup', stopDraw);
+		canvas?.addEventListener('pointercancel', stopDraw);
+		canvas?.addEventListener('pointerleave', stopDraw);
 	});
 
 	let modal: HTMLElement | null = null;

@@ -32,26 +32,52 @@
 		ctx.fillStyle = selectedColor;
 	};
 
-	const startDraw = (e: MouseEvent) => {
-		if (!ctx) return;
+		// Convierte la posición del puntero (mouse/touch/stylus) a coordenadas reales del canvas,
+	// escalando según el tamaño visual actual del <canvas>.
+	const getCanvasPos = (e: PointerEvent) => {
+		const rect = canvas!.getBoundingClientRect();
+		const scaleX = canvas!.width / rect.width;
+		const scaleY = canvas!.height / rect.height;
+		return {
+			x: (e.clientX - rect.left) * scaleX,
+			y: (e.clientY - rect.top) * scaleY
+		};
+	};
+
+	const startDraw = (e: PointerEvent) => {
+		if (!ctx || !canvas) return;
+		e.preventDefault();
 		isDrawing = true;
-		prevMouseX = e.offsetX;
-		prevMouseY = e.offsetY;
+		const pos = getCanvasPos(e);
+		prevMouseX = pos.x;
+		prevMouseY = pos.y;
 		ctx.beginPath();
 		ctx.lineWidth = brushWidth;
 		ctx.strokeStyle = selectedColor;
 		ctx.fillStyle = selectedColor;
-		snapshot = ctx.getImageData(0, 0, canvas!.width, canvas!.height);
+		snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		if (canvas.setPointerCapture) {
+			canvas.setPointerCapture(e.pointerId);
+		}
 	};
 
-	const drawing = (e: MouseEvent) => {
+	const drawing = (e: PointerEvent) => {
 		if (!isDrawing || !ctx) return;
+		e.preventDefault();
 		ctx.putImageData(snapshot, 0, 0);
 
 		if (selectedTool === 'brush' || selectedTool === 'eraser') {
+			const pos = getCanvasPos(e);
 			ctx.strokeStyle = selectedTool === 'eraser' ? '#c2a861' : selectedColor;
-			ctx.lineTo(e.offsetX, e.offsetY);
+			ctx.lineTo(pos.x, pos.y);
 			ctx.stroke();
+		}
+	};
+
+	const stopDraw = (e: PointerEvent) => {
+		isDrawing = false;
+		if (canvas && canvas.hasPointerCapture && canvas.hasPointerCapture(e.pointerId)) {
+			canvas.releasePointerCapture(e.pointerId);
 		}
 	};
 
@@ -114,9 +140,12 @@
 			link.click();
 		});
 
-		canvas?.addEventListener('mousedown', startDraw);
-		canvas?.addEventListener('mousemove', drawing);
-		canvas?.addEventListener('mouseup', () => (isDrawing = false));
+				// Eventos de puntero (unifican mouse, táctil y stylus) con prevención de scroll
+		canvas?.addEventListener('pointerdown', startDraw);
+		canvas?.addEventListener('pointermove', drawing);
+		canvas?.addEventListener('pointerup', stopDraw);
+		canvas?.addEventListener('pointercancel', stopDraw);
+		canvas?.addEventListener('pointerleave', stopDraw);
 	});
 
 	let modal: HTMLElement | null = null;
@@ -167,7 +196,7 @@
 <div id="modal" class="modal">
 	<div class="modal-content">
 		<span class="close">&times;</span>
-		<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSehvLBGn513nlt02lHq4EuxMsiUGeo3CgoGw&s" alt="" class="modal-image" />
+		<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7S75bbgyyUTujhpDCrlH0bflO2WJ1yuLG6rzBjxk19g&s=10" alt="" class="modal-image" />
 		<p><strong>Objetivo:</strong> Intenta recrear todos los pasos de esta imagen.</p>
 	</div>
 </div>
@@ -212,7 +241,7 @@
 		</section>
 	</div>
 	<div class="objective">
-		<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSehvLBGn513nlt02lHq4EuxMsiUGeo3CgoGw&s" alt="" class="objective-image" />
+		<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7S75bbgyyUTujhpDCrlH0bflO2WJ1yuLG6rzBjxk19g&s=10" alt="" class="objective-image" />
 		<p><strong>Nota:</strong> Puedes ampliar la</p>
 		<p>imagen con solo apretarla.</p>
 	</div>

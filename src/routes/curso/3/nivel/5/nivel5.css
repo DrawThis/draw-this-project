@@ -12,6 +12,13 @@ body.nivel-5 #circle-2 {
 	transform: rotate(45deg);
 }
 
+
+body.nivel-5 {
+	min-height: 100dvh;
+	background-color: #000;
+	overflow-x: hidden;
+}
+
 .slider-container {
   position: relative;
   width: 100%;
@@ -65,3 +72,62 @@ body.nivel-5 #circle-2 {
   right: 20px;
 }
 
+/* ---------- Responsive: tablet y móvil ---------- */
+@media (max-width: 1023px) {
+	body.nivel-5 {
+		padding-top: 56px;
+	}
+
+	.slider-container {
+		width: 100%;
+		height: auto;
+		min-height: 70vh;
+		padding-bottom: 90px;
+		box-sizing: border-box;
+	}
+
+	.slide-img {
+		object-fit: cover;
+	}
+
+	.text-overlay {
+		height: auto;
+		max-height: 45%;
+		overflow-y: auto;
+		padding: 10px 14px 70px;
+		box-sizing: border-box;
+	}
+
+	.text-overlay p {
+		padding-right: 0;
+		font-size: 0.95rem;
+	}
+
+	.buttons {
+		font-size: 20px;
+		padding: 8px 16px;
+	}
+}
+
+@media (max-width: 767px) {
+	.slider-container {
+		min-height: 65vh;
+	}
+
+	.text-overlay p {
+		font-size: 0.85rem;
+	}
+
+	.buttons {
+		font-size: 18px;
+		padding: 6px 12px;
+	}
+
+	#prevBtn {
+		left: 8px;
+	}
+
+	#nextBtn {
+		right: 8px;
+	}
+}

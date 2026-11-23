@@ -58,21 +58,45 @@
 		}
 	};
 
-	const startDraw = (e: MouseEvent) => {
-		if (!ctx) return;
+		// Convierte la posición del puntero (mouse/touch/stylus) a coordenadas reales del canvas,
+	// escalando según el tamaño visual actual del <canvas>.
+	const getCanvasPos = (e: PointerEvent) => {
+		const rect = canvas!.getBoundingClientRect();
+		const scaleX = canvas!.width / rect.width;
+		const scaleY = canvas!.height / rect.height;
+		return {
+			x: (e.clientX - rect.left) * scaleX,
+			y: (e.clientY - rect.top) * scaleY
+		};
+	};
+
+	const startDraw = (e: PointerEvent) => {
+		if (!ctx || !canvas) return;
+		e.preventDefault();
 		isDrawing = true;
-		const x = Math.floor(e.offsetX / pixelSize);
-		const y = Math.floor(e.offsetY / pixelSize);
-		console.log('Dibujando en:', x, y, 'con herramienta:', selectedTool);
+		const pos = getCanvasPos(e);
+		const x = Math.floor(pos.x / pixelSize);
+		const y = Math.floor(pos.y / pixelSize);
+		drawPixel(x, y);
+		if (canvas.setPointerCapture) {
+			canvas.setPointerCapture(e.pointerId);
+		}
+	};
+
+	const drawing = (e: PointerEvent) => {
+		if (!isDrawing || !ctx) return;
+		e.preventDefault();
+		const pos = getCanvasPos(e);
+		const x = Math.floor(pos.x / pixelSize);
+		const y = Math.floor(pos.y / pixelSize);
 		drawPixel(x, y);
 	};
 
-	const drawing = (e: MouseEvent) => {
-		if (!isDrawing || !ctx) return;
-		const x = Math.floor(e.offsetX / pixelSize);
-		const y = Math.floor(e.offsetY / pixelSize);
-		console.log('Dibujando en:', x, y, 'con herramienta:', selectedTool);
-		drawPixel(x, y);
+	const stopDraw = (e: PointerEvent) => {
+		isDrawing = false;
+		if (canvas && canvas.hasPointerCapture && canvas.hasPointerCapture(e.pointerId)) {
+			canvas.releasePointerCapture(e.pointerId);
+		}
 	};
 
 	onMount(() => {
@@ -127,9 +151,12 @@
 			link.click();
 		});
 
-		canvas?.addEventListener('mousedown', startDraw);
-		canvas?.addEventListener('mousemove', drawing);
-		canvas?.addEventListener('mouseup', () => (isDrawing = false));
+				// Eventos de puntero (unifican mouse, táctil y stylus) con prevención de scroll
+		canvas?.addEventListener('pointerdown', startDraw);
+		canvas?.addEventListener('pointermove', drawing);
+		canvas?.addEventListener('pointerup', stopDraw);
+		canvas?.addEventListener('pointercancel', stopDraw);
+		canvas?.addEventListener('pointerleave', stopDraw);
 	});
 
 	let modal: HTMLElement | null = null;
