@@ -282,6 +282,17 @@ body.nivel-2 {
 }
 
 @media (max-width: 767px) {
+	.info-container {
+		flex-direction: column;
+		gap: 16px;
+		padding: 10px 0;
+	}
+
+	.info-box {
+		width: 100%;
+		box-sizing: border-box;
+	}
+
 	.timeline-container h1 {
 		font-size: 24px;
 	}
